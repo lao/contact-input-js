@@ -1,0 +1,35 @@
+{
+  "name": "emails-editor-js",
+  "version": "0.0.1",
+  "description": "Simple contacts form written in pure javascript.",
+  "main": "dist/bundle/js/EmailsEditor.js",
+  "browser": "dist/bundle/js/EmailsEditor.min.js",
+  "scripts": {
+    "build": "rollup -c"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lao/EmailsEditor.js.git"
+  },
+  "author": {
+    "name": "Lucas Abreu Oliveira",
+    "email": "lucasabreuoliveira@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/lao/EmailsEditor.js/issues"
+  },
+  "homepage": "TODO",
+  "devDependencies": {
+    "@babel/core": "^7.7.7",
+    "@babel/preset-env": "^7.7.7",
+    "acorn": "^6.4.0",
+    "babel-eslint": "^10.0.3",
+    "rollup": "^0.67.4",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-cleanup": "^3.1.0",
+    "rollup-plugin-eslint": "^5.1.0",
+    "rollup-plugin-gzip": "^2.2.0",
+    "rollup-plugin-scss": "^2.1.0",
+    "rollup-plugin-uglify": "^6.0.4"
+  }
+}

@@ -1,0 +1,2 @@
+# EmailsEditorjs
+documentation todo
