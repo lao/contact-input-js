@@ -5,7 +5,9 @@
   "main": "dist/bundle/js/EmailsEditor.js",
   "browser": "dist/bundle/js/EmailsEditor.min.js",
   "scripts": {
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "local-server": "ws --rewrite '/* -> /dist/$1'  --spa ./dist/test.html",
+    "watch": "rollup -c -w & npm run local-server"
   },
   "repository": {
     "type": "git",
@@ -24,6 +26,7 @@
     "@babel/preset-env": "^7.7.7",
     "acorn": "^6.4.0",
     "babel-eslint": "^10.0.3",
+    "local-web-server": "^2.6.1",
     "rollup": "^0.67.4",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-cleanup": "^3.1.0",

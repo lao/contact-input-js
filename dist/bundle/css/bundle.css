@@ -1,4 +1,86 @@
-.div {
-  background-color: green; }
-  .div .red {
-    background-color: red; }
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,800&display=swap");
+.container {
+  width: 540px;
+  height: 300px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  -webkit-box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.2);
+  font-family: "Open Sans"; }
+  .container .top {
+    height: 140px;
+    padding: 32px 50px;
+    border-radius: 8px 8px 0px 0px;
+    background-color: #f8f8f7; }
+    .container .top h1 {
+      font-size: 20px;
+      font-weight: 400;
+      margin-bottom: 24px; }
+      .container .top h1 strong {
+        font-weight: 700; }
+    .container .top .text-container {
+      width: 440px;
+      height: 96px;
+      background: #ffffff;
+      border: 1px solid #c3c2cf;
+      box-sizing: border-box;
+      border-radius: 4px;
+      padding: 8px;
+      font-size: 14px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      display: flex;
+      flex-wrap: wrap; }
+      .container .top .text-container .ballons-container {
+        display: inline-flex;
+        user-select: none;
+        line-height: 24px;
+        margin-right: 8px; }
+        .container .top .text-container .ballons-container .ballon {
+          background: rgba(102, 153, 255, 0.2);
+          border-radius: 100px;
+          padding: 0 24px 0 10px;
+          height: 24px;
+          padding: 0 24px 0 10px;
+          line-height: 24px; }
+      .container .top .text-container input {
+        line-height: 24px;
+        min-width: 200px;
+        display: inline-flex;
+        border: 0;
+        height: 24px; }
+        .container .top .text-container input::placeholder {
+          color: gray;
+          background-color: transparent;
+          line-height: 24px; }
+    .container .top textarea {
+      border: 0;
+      background-color: transparent;
+      resize: none;
+      height: 24px;
+      font-size: 14px;
+      line-height: 24px; }
+      .container .top textarea::placeholder {
+        color: #c3c2cf; }
+  .container .bottom {
+    display: flex;
+    justify-content: baseline;
+    padding: 24px 50px 32px;
+    height: 40px; }
+  .container button {
+    height: 24px;
+    padding: 8px 16px;
+    width: auto;
+    border-radius: 6px;
+    margin-right: 16px;
+    background: #4262ff;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 24px;
+    text-align: center;
+    color: #ffffff;
+    display: inline-block;
+    border: none;
+    box-sizing: content-box; }

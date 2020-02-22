@@ -3,15 +3,28 @@
   <head>
     <meta charset="utf-8" />
     <title>emailsEditor.js</title>
-		<link rel="stylesheet" type="text/css" media="screen" href="./bundle/css/main.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="./reset.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="./bundle/css/bundle.css">
+    <style>
+      
+      body {
+        background-color: white;
+      }
+    </style>
   </head>
 
-  <body>
-    <div id="emails-editor"></div>
+  <body style="padding: 100px;">
+    <div style="display: flex;justify-content: space-between;flex-direction: row;flex-wrap: wrap;">
+      <div id="emails-editor" style="margin-bottom: 30px;"></div>
+      <div id="emails-editor2"></div>
+    </div>
+
     <script src="./bundle/js/EmailsEditor.min.js"></script>
     <script>
-      const container = document.querySelector('#emails-editor');
-      const test = new emailsEditor({container});
+      const container1 = document.querySelector('#emails-editor');
+      const container2 = document.querySelector('#emails-editor2');
+      const test = new emailsEditor({container: container1});
+      const test2 = new emailsEditor({container: container2});
     </script>
   </body>
 </html>
