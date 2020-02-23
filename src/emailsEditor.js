@@ -121,6 +121,14 @@ export default class emailsEditor {
 
     input.addEventListener('paste', pasteListener);
     input.addEventListener('keyup', keyUpListener);
+    input.addEventListener('focusout', (e) => {
+      const { currentTarget} = e || {};
+      const emailsBefore = [...this.emails];
+      this
+        .renderEmailBlocks(currentTarget.value)
+        .dispatchOnChange(emailsBefore)
+        .cleanInput();
+    });
     ballonsContainer.addEventListener('click', ballonsClickHandler);
 
     if (this.onGetCount && this.onGetCount instanceof Function) {
@@ -131,7 +139,10 @@ export default class emailsEditor {
 
     addRandomBtn.addEventListener('click', () => {
       const random = `some${(new Date()).getTime()}@random.com`;
-      this.renderEmailBlocks(random);
+      const emailsBefore = [...this.emails];
+      this
+        .renderEmailBlocks(random)
+        .dispatchOnChange(emailsBefore);
     });
 
     // TODO: losing focus and adding blocks;

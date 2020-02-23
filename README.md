@@ -50,4 +50,4 @@ Rollup was the choice to bundle this small components for rollup promises a bett
 ## TODOS:
 * remove all html strings
 * improve documentation
-* add random email
+* refactor code and improve it in general

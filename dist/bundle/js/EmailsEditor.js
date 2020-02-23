@@ -156,6 +156,12 @@
         };
         input.addEventListener('paste', pasteListener);
         input.addEventListener('keyup', keyUpListener);
+        input.addEventListener('focusout', function (e) {
+          var _ref3 = e || {},
+              currentTarget = _ref3.currentTarget;
+          var emailsBefore = _toConsumableArray(_this2.emails);
+          _this2.renderEmailBlocks(currentTarget.value).dispatchOnChange(emailsBefore).cleanInput();
+        });
         ballonsContainer.addEventListener('click', ballonsClickHandler);
         if (this.onGetCount && this.onGetCount instanceof Function) {
           getCountBtn.addEventListener('click', function () {
@@ -164,7 +170,8 @@
         }
         addRandomBtn.addEventListener('click', function () {
           var random = "some".concat(new Date().getTime(), "@random.com");
-          _this2.renderEmailBlocks(random);
+          var emailsBefore = _toConsumableArray(_this2.emails);
+          _this2.renderEmailBlocks(random).dispatchOnChange(emailsBefore);
         });
         return this;
       }
