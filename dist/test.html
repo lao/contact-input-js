@@ -24,8 +24,13 @@
     <script>
       const container1 = document.querySelector('#emails-editor');
       const container2 = document.querySelector('#emails-editor2');
-      const test = new emailsEditor({container: container1});
-      const test2 = new emailsEditor({container: container2});
+      const test = new emailsEditor({container: container1, onGetCount: (qtd) => {
+        alert(`There are ${qtd} email(s)`);
+      }});
+      const test2 = new emailsEditor({container: container2, onGetCount: (qtd) => {
+        alert(`There are ${qtd} email(s)`);
+      }});
+      console.log(test);
     </script>
   </body>
 </html>
