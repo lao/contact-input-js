@@ -18,7 +18,9 @@ export default [
     },
     plugins: [
       scss({
-        output: 'dist/bundle/css/bundle.css'
+        output: 'dist/bundle/css/bundle.min.css',
+        outputStyle: 'compressed',
+        sourceMap: true
       }),
       eslint(),
       babel({
@@ -44,9 +46,7 @@ export default [
     },
     plugins: [
       scss({
-        output: 'dist/bundle/css/bundle.min.css',
-        outputStyle: 'compressed',
-        sourceMap: true
+        output: 'dist/bundle/css/bundle.css'
       }),
       eslint(),
       babel({
