@@ -51,3 +51,4 @@ Rollup was the choice to bundle this small components for rollup promises a bett
 * remove all html strings
 * improve documentation
 * refactor code and improve it in general
+* improve/clean css
