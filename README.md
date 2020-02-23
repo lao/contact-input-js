@@ -38,7 +38,7 @@ https://lao.github.io/EmailsEditor.js/
 ```
 
 ## Bundler
-Rollup was the choice to bundle this small components for rollup promises a better bundle size, and it was a good opportunity to test it out
+I decided to go with RollupJS as the choice to bundle this small component for RollupJS promises a better bundle size, and it was a good opportunity to test it out.
 
 ### Location
 ```bash
