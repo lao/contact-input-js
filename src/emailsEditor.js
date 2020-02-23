@@ -40,7 +40,6 @@ export default class emailsEditor {
     if(!emails) {
       return;
     }
-    alert(emails);
     const newEmails = emails.reduce((validEmails, email) => {
       const regexResults = this.isValidEmail(email);
       if (regexResults) {
@@ -65,7 +64,9 @@ export default class emailsEditor {
   }
 
   dispatchOnChange(emailsBefore) {
-    this.onChange(emailsBefore, this.emails);
+    if (this.onChange instanceof Function) {
+      this.onChange(emailsBefore, this.emails);
+    }
     return this;
   }
 
