@@ -16,17 +16,26 @@
   <body style="padding: 100px;">
     <!-- Testing with two instances in the same page -->
     <div style="display: flex;justify-content: space-between;flex-direction: row;flex-wrap: wrap;">
-      <div id="emails-editor" style="margin-bottom: 30px;"></div>
-      <div id="emails-editor2"></div>
+      <div id="emails-editor" style="margin-bottom: 30px; width: 400px;"></div>
+      <div id="emails-editor2" style="width: 800px;"></div>
     </div>
 
     <script src="./bundle/js/EmailsEditor.min.js"></script>
     <script>
       const container1 = document.querySelector('#emails-editor');
       const container2 = document.querySelector('#emails-editor2');
-      const test = new emailsEditor({container: container1, onGetCount: (qtd) => {
-        alert(`There are ${qtd} email(s)`);
-      }});
+      const test = new emailsEditor(
+        {
+          container: container1, 
+          onGetCount: (qtd) => {
+            alert(`There are ${qtd} email(s)`);
+          },
+          onChange: (prev, news) => {
+            console.log(prev);
+            console.log(news);
+          }
+        }
+      );
       const test2 = new emailsEditor({container: container2, onGetCount: (qtd) => {
         alert(`There are ${qtd} email(s)`);
       }});

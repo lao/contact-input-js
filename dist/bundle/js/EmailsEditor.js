@@ -26,6 +26,26 @@
     return Constructor;
   }
 
+  function _toConsumableArray(arr) {
+    return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+  }
+
+  function _arrayWithoutHoles(arr) {
+    if (Array.isArray(arr)) {
+      for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+      return arr2;
+    }
+  }
+
+  function _iterableToArray(iter) {
+    if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
+  }
+
+  function _nonIterableSpread() {
+    throw new TypeError("Invalid attempt to spread non-iterable instance");
+  }
+
   var REMOVE_SVG = "<svg class=\"remove-icon-svg\" width=\"8\" height=\"8\" viewBox=\"0 0 8 8\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M8 0.8L7.2 0L4 3.2L0.8 0L0 0.8L3.2 4L0 7.2L0.8 8L4 4.8L7.2 8L8 7.2L4.8 4L8 0.8Z\" fill=\"#050038\"/>\n</svg>";
   var emailsEditor =
   function () {
@@ -33,15 +53,14 @@
       _classCallCheck(this, emailsEditor);
       config = config || {};
       if (!config || !config.container) {
-        console.log('invalid config exiting...');
-        return;
+        throw new Error('invalid config exiting...');
       }
       this.initValues(config).renderMainContainer().initListeners();
     }
     _createClass(emailsEditor, [{
       key: "initValues",
       value: function initValues(config) {
-        this.emails = {};
+        this.emails = [];
         this.onChange = config.onChange;
         this.container = config.container;
         this.onGetCount = config.onGetCount;
@@ -50,28 +69,39 @@
     }, {
       key: "getEmails",
       value: function getEmails() {
-        return Object.keys(this.emails);
+        return this.emails;
       }
     }, {
       key: "setEmails",
       value: function setEmails(emails) {
         var _this = this;
-        if (!emails || !emails.length) {
+        if (!emails) {
           return;
         }
-        var emailsTemp = emails.reduce(function (email, nonRendered) {
-          if (_this.isValidEmail(email)) {
-            nonRendered.append(email);
-            _this.emails[email] = true;
+        alert(emails);
+        var newEmails = emails.reduce(function (validEmails, email) {
+          var regexResults = _this.isValidEmail(email);
+          if (regexResults) {
+            validEmails.push(regexResults[0]);
           }
-          return nonRendered;
+          return validEmails;
         }, []);
-        this.renderEmails(emailsTemp.list);
+        var emailsBefore = _toConsumableArray(this.emails);
+        this.clearEmailBlocks().renderEmailBlocks(null, newEmails).dispatchOnChange(emailsBefore);
+      }
+    }, {
+      key: "clearEmailBlocks",
+      value: function clearEmailBlocks() {
+        this.emails = [];
+        this.container.querySelectorAll('.ballon').forEach(function (el) {
+          return el.remove();
+        });
+        return this;
       }
     }, {
       key: "dispatchOnChange",
-      value: function dispatchOnChange() {
-        console.log('hello');
+      value: function dispatchOnChange(emailsBefore) {
+        this.onChange(emailsBefore, this.emails);
         return this;
       }
     }, {
@@ -93,8 +123,8 @@
               ctrlKey = _ref.ctrlKey,
               metaKey = _ref.metaKey;
           if (keyCode === keys.COMMA || keyCode === keys.ENTER) {
-            var emailsBefore = Object.keys(_this2.emails);
-            _this2.renderEmails(currentTarget.value).dispatchOnChange(emailsBefore, currentTarget.value).cleanInput();
+            var emailsBefore = _toConsumableArray(_this2.emails);
+            _this2.renderEmailBlocks(currentTarget.value).dispatchOnChange(emailsBefore).cleanInput();
           }
           if (metaKey || ctrlKey) {
             return false;
@@ -106,7 +136,8 @@
               currentTarget = _ref2.currentTarget,
               clipboardData = _ref2.clipboardData;
           var clipBoardText = clipboardData.getData('text');
-          _this2.renderEmails(currentTarget.value + clipBoardText).cleanInput();
+          var emailsBefore = _toConsumableArray(_this2.emails);
+          _this2.renderEmailBlocks(currentTarget.value + clipBoardText).dispatchOnChange(emailsBefore).cleanInput();
           e.preventDefault();
         };
         var ballonsClickHandler = function ballonsClickHandler(e) {
@@ -114,7 +145,9 @@
           var target = isClickOnSvg ? e.target.parentElement : e.target;
           if (target.className === 'remove-icon') {
             if (target.parentElement.className !== 'invalid ballon') {
-              delete _this2.emails[target.parentElement.getAttribute('data-email')];
+              var emailsBefore = _toConsumableArray(_this2.emails);
+              _this2.emails.splice(_this2.emails.indexOf(target.parentElement.getAttribute('data-email')), 1);
+              _this2.dispatchOnChange(emailsBefore);
             }
             ballonsContainer.removeChild(target.parentElement);
           }
@@ -124,8 +157,7 @@
         ballonsContainer.addEventListener('click', ballonsClickHandler);
         if (this.onGetCount && this.onGetCount instanceof Function) {
           getCountBtn.addEventListener('click', function () {
-            var emails = Object.keys(_this2.emails);
-            _this2.onGetCount(emails.length);
+            _this2.onGetCount(_this2.emails.length);
           });
         }
         return this;
@@ -135,7 +167,7 @@
       value: function renderEmailBlock(string, valid) {
         var removeIconDiv = document.createElement('div');
         removeIconDiv.className = !valid ? 'invalid ballon' : 'ballon';
-        removeIconDiv.innerHTML = "".concat(string, " <div class=\"remove-icon\">").concat(REMOVE_SVG, "</div>");
+        removeIconDiv.innerHTML = "".concat(valid ? string : "<span>".concat(string, "</span>"), " <div class=\"remove-icon\">").concat(REMOVE_SVG, "</div>");
         removeIconDiv.setAttribute('data-email', valid ? string : '');
         return removeIconDiv;
       }
@@ -143,22 +175,23 @@
       key: "isValidEmail",
       value: function isValidEmail(string) {
         var emailRegx = /(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/g;
-        return !!emailRegx.exec(string);
+        return emailRegx.exec(string);
       }
     }, {
-      key: "renderEmails",
-      value: function renderEmails(stringValue, values) {
+      key: "renderEmailBlocks",
+      value: function renderEmailBlocks(stringValue, values) {
         var _this3 = this;
         var blocks = values || (stringValue || '').split(',');
         var ballonsBlockFrag = document.createDocumentFragment();
         blocks.map(function (block) {
-          if (!(block + '').trim()) {
+          block = (block + '').trim();
+          if (!block) {
             return;
           }
           var isEmail = _this3.isValidEmail(block);
           ballonsBlockFrag.appendChild(_this3.renderEmailBlock(block, isEmail));
           if (isEmail) {
-            _this3.emails[block] = true;
+            _this3.emails.push(block);
           }
         });
         var inputEl = this.container.querySelector('.input-container');

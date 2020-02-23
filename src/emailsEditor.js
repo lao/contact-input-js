@@ -1,5 +1,5 @@
-/* eslint-disable no-console */
 import './main.scss';
+
 // TODO: turn this into createElement and EXTERNALIZE
 const REMOVE_SVG = `<svg class="remove-icon-svg" width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path fill-rule="evenodd" clip-rule="evenodd" d="M8 0.8L7.2 0L4 3.2L0.8 0L0 0.8L3.2 4L0 7.2L0.8 8L4 4.8L7.2 8L8 7.2L4.8 4L8 0.8Z" fill="#050038"/>
@@ -12,8 +12,7 @@ export default class emailsEditor {
     config = config || {};
 
     if (!config || !config.container) {
-      console.log('invalid config exiting...');
-      return;
+      throw new Error('invalid config exiting...');
     }
 
     this
@@ -23,7 +22,7 @@ export default class emailsEditor {
   }
 
   initValues(config) {
-    this.emails = {};
+    this.emails = [];
     this.onChange = config.onChange;
     this.container = config.container;
     this.onGetCount = config.onGetCount;
@@ -31,30 +30,42 @@ export default class emailsEditor {
   }
 
   getEmails() {
-    return Object.keys(this.emails);
+    return this.emails;
   }
 
   /**
-   * It receives list of emails and append valids to the local list plus renders valid emails only
+   * It clears emails in view and render only valid ones
    */
   setEmails(emails) {
-    if(!emails || !emails.length) {
+    if(!emails) {
       return;
     }
-    const emailsTemp = emails.reduce((email, nonRendered) => {
-      if(this.isValidEmail(email)) {
-        nonRendered.append(email);
-        this.emails[email] = true;
+    alert(emails);
+    const newEmails = emails.reduce((validEmails, email) => {
+      const regexResults = this.isValidEmail(email);
+      if (regexResults) {
+        validEmails.push(regexResults[0]);
       }
-      return nonRendered;
+      return validEmails;
     }, []);
-    this.renderEmails(emailsTemp.list);
-    // [Decided not to do as setEmails, seems to be useful only for appending]
-    // TODO: remove preexisting emails
+    const emailsBefore = [...this.emails];
+    this
+      .clearEmailBlocks()
+      .renderEmailBlocks(null, newEmails)
+      .dispatchOnChange(emailsBefore);
   }
 
-  dispatchOnChange() {
-    console.log('hello');
+  clearEmailBlocks() {
+    this.emails = [];
+    this.container
+      .querySelectorAll('.ballon')
+      .forEach(el => el.remove());
+
+    return this;
+  }
+
+  dispatchOnChange(emailsBefore) {
+    this.onChange(emailsBefore, this.emails);
     return this;
   }
 
@@ -70,10 +81,10 @@ export default class emailsEditor {
     const keyUpListener = e => {
       const { keyCode, currentTarget, ctrlKey, metaKey } = e || {};
       if (keyCode === keys.COMMA || keyCode === keys.ENTER) {
-        const emailsBefore = Object.keys(this.emails);
+        const emailsBefore = [...this.emails];
         this
-          .renderEmails(currentTarget.value)
-          .dispatchOnChange(emailsBefore, currentTarget.value)
+          .renderEmailBlocks(currentTarget.value)
+          .dispatchOnChange(emailsBefore)
           .cleanInput();
       }
       if (metaKey || ctrlKey) {
@@ -84,9 +95,10 @@ export default class emailsEditor {
     const pasteListener = e => {
       const { currentTarget, clipboardData } = e || {};
       const clipBoardText = clipboardData.getData('text');
-
+      const emailsBefore = [...this.emails];
       this
-        .renderEmails(currentTarget.value+clipBoardText)
+        .renderEmailBlocks(currentTarget.value+clipBoardText)
+        .dispatchOnChange(emailsBefore)
         .cleanInput();
 
       e.preventDefault();
@@ -97,7 +109,9 @@ export default class emailsEditor {
 
       if (target.className === 'remove-icon') {
         if (target.parentElement.className !== 'invalid ballon') {
-          delete this.emails[target.parentElement.getAttribute('data-email')];
+          const emailsBefore = [...this.emails];
+          this.emails.splice(this.emails.indexOf(target.parentElement.getAttribute('data-email')), 1);
+          this.dispatchOnChange(emailsBefore);
         }
         ballonsContainer.removeChild(target.parentElement);
       }
@@ -109,10 +123,11 @@ export default class emailsEditor {
 
     if (this.onGetCount && this.onGetCount instanceof Function) {
       getCountBtn.addEventListener('click', () => {
-        const emails = Object.keys(this.emails);
-        this.onGetCount(emails.length);
+        this.onGetCount(this.emails.length);
       });
     }
+
+    // TODO: losing focus and adding blocks;
 
     return this;
   }
@@ -121,7 +136,7 @@ export default class emailsEditor {
     const removeIconDiv = document.createElement('div');
     removeIconDiv.className = !valid ? 'invalid ballon' : 'ballon';
     // TODO: turn this into createElement
-    removeIconDiv.innerHTML = `${string} <div class="remove-icon">${REMOVE_SVG}</div>`;
+    removeIconDiv.innerHTML = `${valid ? string : `<span>${string}</span>`} <div class="remove-icon">${REMOVE_SVG}</div>`;
     removeIconDiv.setAttribute('data-email', valid ? string : '');
     return removeIconDiv;
   }
@@ -129,25 +144,28 @@ export default class emailsEditor {
   isValidEmail(string) {
     // eslint-disable-next-line max-len
     const emailRegx = /(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/g;
-    return !!emailRegx.exec(string);
+    return emailRegx.exec(string);
   }
 
   /**
    * It break string value into blocks by comma, checks if is valid, adds to local copy of valid emails
    * and then renders, all in one go for performance purposes.
    */
-  renderEmails(stringValue, values) {
+  renderEmailBlocks(stringValue, values) {
     const blocks = values || (stringValue || '').split(',');
     const ballonsBlockFrag = document.createDocumentFragment();
 
     blocks.map((block) => {
-      if(!(block + '').trim()) {return;}
+      block = (block + '').trim();
+      if (!block) {
+        return;
+      }
       const isEmail = this.isValidEmail(block);
       ballonsBlockFrag.appendChild(this.renderEmailBlock(block, isEmail));
 
       // validations and saving to local copy
       if (isEmail) {
-        this.emails[block] = true;
+        this.emails.push(block);
       }
     });
 

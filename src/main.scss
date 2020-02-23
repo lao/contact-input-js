@@ -6,11 +6,10 @@ $font-normal-light: 300;
 $font-normal-weight: 400;
 $font-normal-bold: 700;
 
-$full-width: 540px;
 $full-height: 300px;
 
 .container {
-    width: $full-width;
+    width: inherit;
     height: $full-height;
     border-radius: 8px;
 
@@ -23,10 +22,12 @@ $full-height: 300px;
     font-family: $font-family;
 
     .top {
-        height: 140px;
+        height: 204px;
         padding: 32px 50px;
         border-radius: 8px 8px 0px 0px;
         background-color: #f8f8f7;
+        box-sizing: border-box;
+        width: inherit;
 
         h1 {
             font-size: 20px;
@@ -39,7 +40,6 @@ $full-height: 300px;
         }
 
         .text-container {
-            width: 440px;
             height: 96px;
             background: #ffffff;
             border: 1px solid #c3c2cf;
@@ -52,17 +52,17 @@ $full-height: 300px;
 
             display: flex;
             flex-wrap: wrap;
+            width: auto;
 
             .ballons-container {
-                display: inline-flex;
+                display: flex;
                 user-select: none;
                 line-height: 24px;
                 margin-right: 8px;
                 align-items: baseline;
-                max-width: 410px;
                 flex-wrap: wrap;
-                width: inherit;
-                position: relative;
+                width: 100%;
+                
                 .ballon {
                     background: rgba(102, 153, 255, 0.2);
                     border-radius: 100px;
@@ -73,7 +73,10 @@ $full-height: 300px;
                     margin-bottom: 4px;
                     overflow: hidden;
                     &.invalid {
-                        background: rgba(255, 0, 0, 0.16);
+                        background: rgba(102, 153, 255, 0.1);
+                        span {
+                            border-bottom: 1px dashed red;
+                        }
                     }
                     .remove-icon {
                         display: inline-block;
@@ -141,5 +144,9 @@ $full-height: 300px;
         display: inline-block;
         border: none;
         box-sizing: content-box;
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }
