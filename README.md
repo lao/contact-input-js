@@ -1,5 +1,8 @@
 # EmailsEditorjs
 
+## Live demo
+https://lao.github.io/EmailsEditor.js/
+
 ## How to use on project
 ```html
     <head>
@@ -47,4 +50,4 @@ Rollup was the choice to bundle this small components for rollup promises a bett
 ## TODOS:
 * remove all html strings
 * improve documentation
-* 
+* add random email
