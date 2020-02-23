@@ -75,6 +75,7 @@ export default class emailsEditor {
     const input = container.querySelector('input');
     const ballonsContainer = container.querySelector('.ballons-container');
     const getCountBtn = container.querySelector('.btn-count');
+    const addRandomBtn = container.querySelector('.btn-add-random');
     const keys = {
       ENTER: 13,
       COMMA: 188,
@@ -127,6 +128,11 @@ export default class emailsEditor {
         this.onGetCount(this.emails.length);
       });
     }
+
+    addRandomBtn.addEventListener('click', () => {
+      const random = `some${(new Date()).getTime()}@random.com`;
+      this.renderEmailBlocks(random);
+    });
 
     // TODO: losing focus and adding blocks;
 
@@ -202,7 +208,7 @@ export default class emailsEditor {
           </div>
         </div>
         <div class="bottom">
-          <button>
+          <button class="btn-add-random">
             Add email
           </button>  
           <button class="btn-count">

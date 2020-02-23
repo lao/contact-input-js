@@ -78,7 +78,6 @@
         if (!emails) {
           return;
         }
-        alert(emails);
         var newEmails = emails.reduce(function (validEmails, email) {
           var regexResults = _this.isValidEmail(email);
           if (regexResults) {
@@ -101,7 +100,9 @@
     }, {
       key: "dispatchOnChange",
       value: function dispatchOnChange(emailsBefore) {
-        this.onChange(emailsBefore, this.emails);
+        if (this.onChange instanceof Function) {
+          this.onChange(emailsBefore, this.emails);
+        }
         return this;
       }
     }, {
@@ -112,6 +113,7 @@
         var input = container.querySelector('input');
         var ballonsContainer = container.querySelector('.ballons-container');
         var getCountBtn = container.querySelector('.btn-count');
+        var addRandomBtn = container.querySelector('.btn-add-random');
         var keys = {
           ENTER: 13,
           COMMA: 188
@@ -160,6 +162,10 @@
             _this2.onGetCount(_this2.emails.length);
           });
         }
+        addRandomBtn.addEventListener('click', function () {
+          var random = "some".concat(new Date().getTime(), "@random.com");
+          _this2.renderEmailBlocks(random);
+        });
         return this;
       }
     }, {
@@ -210,7 +216,7 @@
       key: "renderMainContainer",
       value: function renderMainContainer() {
         var container = this.container;
-        var template = "\n      <div class=\"container\">\n        <div class=\"top\">\n          <h1>Share <strong>Board name</strong> with others</h1>\n          <div class=\"text-container\">\n            <div class=\"ballons-container\">\n              <div class=\"input-container\"><input placeholder=\"add more people...\"/></div>\n            </div>\n          </div>\n        </div>\n        <div class=\"bottom\">\n          <button>\n            Add email\n          </button>  \n          <button class=\"btn-count\">\n            Get emails count\n          </button>\n        </div>\n      </div>\n    ";
+        var template = "\n      <div class=\"container\">\n        <div class=\"top\">\n          <h1>Share <strong>Board name</strong> with others</h1>\n          <div class=\"text-container\">\n            <div class=\"ballons-container\">\n              <div class=\"input-container\"><input placeholder=\"add more people...\"/></div>\n            </div>\n          </div>\n        </div>\n        <div class=\"bottom\">\n          <button class=\"btn-add-random\">\n            Add email\n          </button>  \n          <button class=\"btn-count\">\n            Get emails count\n          </button>\n        </div>\n      </div>\n    ";
         container.innerHTML = template;
         return this;
       }
